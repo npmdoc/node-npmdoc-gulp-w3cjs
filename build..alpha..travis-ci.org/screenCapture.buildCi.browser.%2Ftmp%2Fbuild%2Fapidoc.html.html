@@ -56,6 +56,15 @@
 
         <li>
 
+            <a class="apidocElementLiA" href="#apidoc.element.gulp-w3cjs.gulp-w3cjs">
+            function <span class="apidocSignatureSpan"></span>gulp-w3cjs
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
             <a class="apidocElementLiA" href="#apidoc.element.gulp-w3cjs.reporter">
             function <span class="apidocSignatureSpan">gulp-w3cjs.</span>reporter
             <span class="apidocSignatureSpan">()</span>
@@ -78,6 +87,53 @@
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.gulp-w3cjs" id="apidoc.module.gulp-w3cjs">module gulp-w3cjs</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.gulp-w3cjs.gulp-w3cjs" id="apidoc.element.gulp-w3cjs.gulp-w3cjs">
+        function <span class="apidocSignatureSpan"></span>gulp-w3cjs
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">gulp-w3cjs = function (options) {
+	options = options || {};
+
+	// I typo'd this and didn't want to break BC
+	if (typeof options.uri === 'string') {
+		options.url = options.uri;
+	}
+
+	if (typeof options.url === 'string') {
+		w3cjs.setW3cCheckUrl(options.url);
+	}
+
+	return through.obj(function (file, enc, callback) {
+		if (file.isNull()) {
+			return callback(null, file);
+		}
+
+		if (file.isStream()) {
+			return callback(new gutil.PluginError('gulp-w3cjs', 'Streaming not supported'));
+		}
+
+		w3cjs.validate({
+			proxy: options.proxy ? options.proxy : undefined,
+			input: file.contents,
+			callback: function (res) {
+				file.w3cjs = {
+					success: handleMessages(file, res.messages, options),
+					messages: res.messages
+				};
+
+				callback(null, file);
+			}
+		});
+	});
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 
     <h2>
